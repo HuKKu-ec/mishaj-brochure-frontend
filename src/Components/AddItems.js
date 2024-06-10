@@ -1,109 +1,102 @@
 import React, { useContext, useState } from 'react';
-import { Button, Card, Col, Row, Spinner } from 'react-bootstrap';
+import { Button, Card, Col, Row, Spinner, Modal } from 'react-bootstrap';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import Form from 'react-bootstrap/Form';
+import { Cropper } from 'react-cropper';
+import 'cropperjs/dist/cropper.css';
 import { CategoryContext } from '../Context/CategoryContextProvider';
 import { ProductContext } from '../Context/ProductContextProvider';
 import { toast } from 'react-toastify';
 import { AdminContext } from '../Context/AdminContextProvider';
+
 const AddItems = () => {
   const [proId, setProId] = useState('');
   const [cate, setCate] = useState('');
-  const [imageUpload, setImageUpload] = useState('');
-
+  const [images, setImages] = useState([]);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [cropper, setCropper] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
   const [progress, setProgress] = useState(true);
   const { categorys } = useContext(CategoryContext);
   const { dispatch } = useContext(ProductContext);
   const { admin } = useContext(AdminContext);
+  const [show, setShow] = useState(false);
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
 
   const handleClear = () => {
     setProId('');
     setCate('');
-    document.getElementsByClassName('file-input')[0].value = '';
-    setImageUpload('');
+    setImages([]);
+    setImagePreview(null);
+    setCurrentImageIndex(0);
   };
 
   const handleAddItem = async (e) => {
+    e.preventDefault();
     setProgress(false);
-    if (proId && cate && imageUpload) {
-      e.preventDefault();
 
-      const formdata = new FormData();
-      for (let i = 0; i < imageUpload.length; i++) {
-        formdata.append('files', imageUpload[i]);
-      }
-      formdata.append('productId', proId);
-      formdata.append('category', cate);
+    if (proId && cate && images.length > 0) {
+      const formData = new FormData();
+      images.forEach((image) => formData.append('files', image));
+      formData.append('productId', proId);
+      formData.append('category', cate);
 
       const response = await fetch('/api/products', {
         method: 'POST',
-        body: formdata,
+        body: formData,
         headers: {
           Authorization: `Bearer ${admin.token}`,
         },
       });
+
       const json = await response.json();
       if (response.ok) {
-        toast.success(`Product is added successfully`, {
-          draggablePercent: 60,
-          position: toast.POSITION.BOTTOM_CENTER,
-          autoClose: 2000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: 'light',
-        });
+        toast.success('Product is added successfully');
         setProgress(true);
         dispatch({ type: 'ADDPRODUCT', payload: json });
         handleClear();
       } else {
         setProgress(true);
-        if (json.error.code === 11000) {
-          toast.error(
-            `The Product with this ID ( ${json.error.keyValue.productId} )
-            already exist`,
-            {
-              draggablePercent: 60,
-              position: toast.POSITION.BOTTOM_CENTER,
-              autoClose: 2000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-              theme: 'light',
-            }
-          );
-        } else {
-          setProgress(true);
-          toast.error(`${json.message}`, {
-            draggablePercent: 60,
-            position: toast.POSITION.BOTTOM_CENTER,
-            autoClose: 2000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: 'light',
-          });
-        }
+        toast.error(json.message);
       }
     } else {
       setProgress(true);
-      toast.error(`Error:All fields must be filled`, {
-        draggablePercent: 60,
-        position: toast.POSITION.BOTTOM_CENTER,
-        autoClose: 2000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: 'light',
-      });
+      toast.error('Error: All fields must be filled');
+    }
+  };
+
+  const handleFileChange = (e) => {
+    const files = Array.from(e.target.files);
+    if (files.length > 0) {
+      setImages(files);
+      setImagePreview(URL.createObjectURL(files[0]));
+      setCurrentImageIndex(0);
+      setShow(true);
+    }
+  };
+
+  const handleCrop = () => {
+    if (cropper) {
+      cropper.getCroppedCanvas().toBlob((blob) => {
+        const croppedImage = new File(
+          [blob],
+          `cropped_${currentImageIndex}.jpg`,
+          { type: 'image/jpeg' }
+        );
+        setImages((prevImages) => {
+          const newImages = [...prevImages];
+          newImages[currentImageIndex] = croppedImage;
+          return newImages;
+        });
+        if (currentImageIndex < images.length - 1) {
+          setCurrentImageIndex(currentImageIndex + 1);
+          setImagePreview(URL.createObjectURL(images[currentImageIndex + 1]));
+        } else {
+          setShow(false);
+        }
+      }, 'image/jpeg');
     }
   };
 
@@ -111,7 +104,6 @@ const AddItems = () => {
     <div className="additems-container">
       <Card className="p-3">
         <h1 style={{ textAlign: 'center' }}>Add Items</h1>
-        {/* enter Product ID */}
         <FloatingLabel
           controlId="floatingInput"
           label="Product ID"
@@ -120,77 +112,94 @@ const AddItems = () => {
           <Form.Control
             value={proId}
             type="text"
-            onChange={(e) => {
-              setProId(e.target.value);
-            }}
+            onChange={(e) => setProId(e.target.value)}
           />
         </FloatingLabel>
-        {/* select Product Catogory */}
         <FloatingLabel
-          className="mb-2"
           controlId="floatingSelect"
           label="Category"
+          className="mb-2"
         >
           <Form.Select
             as="select"
-            controlled="true"
             value={cate}
-            onChange={(e) => {
-              setCate(e.target.value);
-            }}
-            placeholder="Category"
+            onChange={(e) => setCate(e.target.value)}
           >
-            <option></option>
-            {categorys ? (
-              categorys.map((value, i) => {
-                return (
-                  <option key={i} value={`${value.category}`}>
-                    {value.category}
-                  </option>
-                );
-              })
-            ) : (
-              <option></option>
-            )}
+            <option value="">Select Category</option>
+            {categorys &&
+              categorys.map((value, i) => (
+                <option key={i} value={value.category}>
+                  {value.category}
+                </option>
+              ))}
           </Form.Select>
         </FloatingLabel>
-
-        {/* file upload */}
-        <Form.Group controlId="formFile" className="mb-3">
-          <Form.Label>Upload The Image</Form.Label>
-          <Form.Control
-            className="file-input"
-            type="file"
-            multiple
-            onChange={(e) => {
-              setImageUpload(e.target.files);
-            }}
-          />
-        </Form.Group>
+        <Button variant="primary mb-3" onClick={handleShow}>
+          Upload Images
+        </Button>
+        <Modal show={show} onHide={handleClose} size="lg">
+          <Modal.Header closeButton>
+            <Modal.Title>Upload and Crop Images</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <Form.Group controlId="formFile" className="mb-3">
+              <Form.Label>Upload The Images</Form.Label>
+              <Form.Control
+                className="file-input"
+                type="file"
+                multiple
+                onChange={handleFileChange}
+              />
+            </Form.Group>
+            {imagePreview && (
+              <Cropper
+                src={imagePreview}
+                style={{ height: 400, width: '100%' }}
+                aspectRatio={5 / 6}
+                viewMode={1}
+                guides={false}
+                background={false}
+                responsive={true}
+                autoCropArea={1}
+                checkOrientation={false}
+                onInitialized={(instance) => setCropper(instance)}
+              />
+            )}
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={handleClose}>
+              Close
+            </Button>
+            <Button variant="primary" onClick={handleCrop}>
+              Crop & Save ({currentImageIndex + 1} / {images.length})
+            </Button>
+          </Modal.Footer>
+        </Modal>
         <Row className="justify-content-xs-right mb-4">
           <Col>
-            {progress ? (
-              <Button variant="primary " onClick={handleClear}>
-                Clear All
-              </Button>
-            ) : (
-              <Button variant="primary " disabled>
-                Clear All
-              </Button>
-            )}
+            <Button
+              variant="primary"
+              onClick={handleClear}
+              disabled={!progress}
+            >
+              Clear All
+            </Button>
           </Col>
-
           <Col xs="auto">
-            {progress ? (
-              <Button variant="success" onClick={handleAddItem}>
-                Add Item
-              </Button>
-            ) : (
-              <Button variant="success">
-                <Spinner animation="grow" variant="light" size="sm"></Spinner>
-                Uploading
-              </Button>
-            )}
+            <Button
+              variant="success"
+              onClick={handleAddItem}
+              disabled={!progress}
+            >
+              {progress ? (
+                'Add Item'
+              ) : (
+                <>
+                  <Spinner animation="grow" variant="light" size="sm" />
+                  Uploading
+                </>
+              )}
+            </Button>
           </Col>
         </Row>
       </Card>

@@ -30,7 +30,7 @@ function App() {
             path="/login"
             element={!admin ? <AdminLogin /> : <AdminScreen />}
           />
-          <Route path="/edit" element={<EditScreen />} />
+          <Route path="/admin/edit/:id" element={<EditScreen />} />
         </Routes>
       </BrowserRouter>
     </div>

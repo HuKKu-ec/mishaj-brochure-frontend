@@ -1,9 +1,21 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Button, Card, Col, Row } from 'react-bootstrap';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import Form from 'react-bootstrap/Form';
+import { useParams } from 'react-router-dom';
 
 const EditScreen = () => {
+  const { id } = useParams();
+  const fetchData = async () => {
+    const response = await fetch('/api/products/' + id, {
+      method: 'GET',
+    });
+    console.log(response);
+  };
+  useEffect(() => {
+    fetchData();
+  }, []);
+
   return (
     <div>
       {' '}
@@ -49,5 +61,4 @@ const EditScreen = () => {
     </div>
   );
 };
-
 export default EditScreen;

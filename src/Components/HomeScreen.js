@@ -47,6 +47,14 @@ const HomeScreen = () => {
                       variant="top"
                       src={`/${value.files[0].path}`}
                     />
+                    {/* <video autoplay controls>
+                      <source
+                        src={`/${value.files[0].path}`}
+                        type="video/mp4"
+                      />
+                      Your browser does not support the video tag.
+                    </video> */}
+
                     <Card.Body>
                       <Card.Title style={{ textAlign: 'center' }}>
                         {value.productId}

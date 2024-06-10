@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { Card, Col, Row } from 'react-bootstrap';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import { Carousel } from 'react-responsive-carousel';
@@ -9,8 +9,21 @@ const ProductDisplay = () => {
   const { products } = useContext(HomeContext);
   const product = products.filter((data) => data._id === id);
   const { files } = product[0];
+  const fetchData = async () => {
+    const response = await fetch('/api/products/' + id, {
+      method: 'GET',
+    });
+    console.log(response);
+  };
+  useEffect(() => {
+    fetchData();
+  }, []);
+
   return (
-    <div className="product-display-container">
+    <div
+      className="product-display-container"
+      style={{ backgroundColor: '#e4e4e4', padding: '50px' }}
+    >
       {' '}
       <Row>
         <Col lg="7">

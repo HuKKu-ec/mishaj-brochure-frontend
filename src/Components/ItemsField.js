@@ -154,7 +154,7 @@ const ItemsField = () => {
                     })} */}
                   </td>
                   <td>
-                    <Link to="/edit">
+                    <Link to={`edit/${value._id}`}>
                       <Button variant="primary">Edit</Button>
                     </Link>
                   </td>
