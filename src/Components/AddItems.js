@@ -103,7 +103,7 @@ const AddItems = () => {
   return (
     <div className="additems-container">
       <Card className="p-3">
-        <h1 style={{ textAlign: 'center' }}>Add Items</h1>
+        <h2 style={{ textAlign: 'center' }}>Add Items</h2>
         <FloatingLabel
           controlId="floatingInput"
           label="Product ID"

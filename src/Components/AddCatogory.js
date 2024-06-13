@@ -12,9 +12,9 @@ import { CategoryContext } from '../Context/CategoryContextProvider';
 import { ProductContext } from '../Context/ProductContextProvider';
 import { toast } from 'react-toastify';
 import { AdminContext } from '../Context/AdminContextProvider';
-const AddCatogory = () => {
-  const [category, setCategory] = useState('');
 
+const AddCategory = () => {
+  const [category, setCategory] = useState('');
   const [progress, setProgress] = useState(true);
   const { dispatch } = useContext(CategoryContext);
   const { dispatch: productDispatch } = useContext(ProductContext);
@@ -32,7 +32,7 @@ const AddCatogory = () => {
       dispatch({ type: 'GETALLCATEGORY', payload: json.categorys });
     };
     fetchCategory();
-  }, []);
+  }, [dispatch, admin.token]);
 
   const handleClear = () => {
     setCategory('');
@@ -161,13 +161,14 @@ const AddCatogory = () => {
       });
     }
   };
+
   return (
     <div>
       <Card className="p-3 mt-5">
-        <h1 style={{ textAlign: 'center' }}>Add Categorys</h1>
+        <h2 style={{ textAlign: 'center' }}>Add Categories</h2>
         <FloatingLabel
           controlId="floatingInput"
-          label="Add a Catogory Name"
+          label="Add a Category Name"
           className="mb-3 mt-2"
         >
           <Form.Control
@@ -178,40 +179,39 @@ const AddCatogory = () => {
             }}
           />
         </FloatingLabel>
-        <Row className="justify-content-xs-right mb-4">
-          <Col>
-            {progress ? (
-              <Button variant="primary" onClick={handleClear}>
-                Clear All
-              </Button>
-            ) : (
-              <Button variant="primary" disabled>
-                Clear All
-              </Button>
-            )}
-          </Col>
-          <Col>
-            {progress ? (
-              <Button variant="danger" onClick={DeleteCategoryHandle}>
-                Delete
-              </Button>
-            ) : (
-              <Button variant="danger" disabled>
-                Delete
-              </Button>
-            )}
+
+        <Row className="mb-4 align-items-center justify-content-center gap-3">
+          <Col xs="auto">
+            <Button
+              variant="primary"
+              onClick={handleClear}
+              disabled={!progress}
+            >
+              Clear All
+            </Button>
           </Col>
           <Col xs="auto">
-            {progress ? (
-              <Button variant="success" onClick={AddCategoryHandle}>
-                Add
-              </Button>
-            ) : (
-              <Button variant="success">
-                <Spinner animation="grow" variant="light" size="sm"></Spinner>
-                Adding...
-              </Button>
-            )}
+            <Button
+              variant="danger"
+              onClick={DeleteCategoryHandle}
+              disabled={!progress}
+            >
+              Delete
+            </Button>
+          </Col>
+          <Col xs="auto">
+            <Button
+              variant="success"
+              onClick={AddCategoryHandle}
+              disabled={!progress}
+            >
+              {progress ? (
+                'Add'
+              ) : (
+                <Spinner animation="grow" variant="light" size="sm" />
+              )}
+              {!progress && ' Adding...'}
+            </Button>
           </Col>
         </Row>
       </Card>
@@ -219,4 +219,4 @@ const AddCatogory = () => {
   );
 };
 
-export default AddCatogory;
+export default AddCategory;
