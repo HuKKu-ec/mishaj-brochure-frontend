@@ -19,7 +19,7 @@ const AdminScreen = () => {
               <AddItems />
               <AddCatogory />
             </Col>
-            <Col className="mt-5" lg="8">
+            <Col className="mt-1" lg="8">
               <ItemsField />
             </Col>
           </Row>

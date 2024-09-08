@@ -3,8 +3,6 @@
   margin: 0px auto;
 }
 .admin-container {
-  margin-top: 100px;
-  max-width: 1200px;
   margin: 50px auto;
 }
 .product-display-container {
@@ -20,7 +18,7 @@
   width: 140px;
 }
 .itemsfield-container {
-  margin-left: 100px;
+  margin-left: 20px;
 }
 .scrollbar-container {
   margin: 10px;

@@ -1,53 +1,89 @@
-import React, { useContext, useEffect } from 'react';
-import { Card, Col, Row } from 'react-bootstrap';
+import React, { useContext, useEffect, useState } from 'react';
+import { Card, Col, Row, Container } from 'react-bootstrap';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import { Carousel } from 'react-responsive-carousel';
 import { useParams } from 'react-router-dom';
-import { HomeContext } from '../Context/HomeContextProvider';
+
 const ProductDisplay = () => {
   let { id } = useParams();
-  const { products } = useContext(HomeContext);
-  const product = products.filter((data) => data._id === id);
-  const { files } = product[0];
+  const [product, setProduct] = useState({});
+
+  const { files, available_size_and_rate } = product;
+
   const fetchData = async () => {
-    const response = await fetch('/api/products/' + id, {
+    const response = await fetch('/api/home/' + id, {
       method: 'GET',
     });
-    console.log(response);
+
+    if (response.ok) {
+      const data = await response.json();
+      setProduct(data.product);
+    } else {
+      console.error('Failed to fetch product data');
+    }
   };
+
   useEffect(() => {
     fetchData();
   }, []);
 
   return (
-    <div
-      className="product-display-container"
-      style={{ backgroundColor: '#e4e4e4', padding: '50px' }}
-    >
-      {' '}
-      <Row>
-        <Col lg="7">
-          <Card className="p-3 mt-5">
-            <Carousel>
+    <Container className="product-card-container">
+      <Card className="p-1 shadow-lg rounded">
+        <Row>
+          <Col lg={4}>
+            <Carousel infiniteLoop={true} autoPlay={true} className="rounded">
               {files &&
-                files.map((value, i) => {
-                  return (
-                    <div>
-                      <img src={`/${value.path}`} />
-                    </div>
-                  );
-                })}
+                files.map((value, i) => (
+                  <div key={i}>
+                    <img
+                      src={`/${value.path}`}
+                      alt={`Product Image ${i + 1}`}
+                    />
+                  </div>
+                ))}
             </Carousel>
-          </Card>
-        </Col>
-        <Col lg="5">
-          <Card className="p-3 mt-5">
-            <h1>{product && product[0].category}</h1>
-            <h3>PRODUCT ID :{product && product[0].productId}</h3>
-          </Card>
-        </Col>
-      </Row>
-    </div>
+          </Col>
+          <Col lg={1}></Col>
+          <Col lg={7} className="d-flex flex-column justify-content-between">
+            <div>
+              <div className="p-3 bg-light">
+                <h2 className="text-dark">{product.category}</h2>
+                <h4 className="text-muted">Product ID: {product.productId}</h4>
+              </div>
+              <div className="mt-2 bg-light p-3">
+                {available_size_and_rate &&
+                  available_size_and_rate.length > 0 && (
+                    <Row className="text-center p-2">
+                      <Col>
+                        <b>Height</b>
+                      </Col>
+                      <Col>
+                        <b>Width</b>
+                      </Col>
+                      <Col>
+                        <b>Rate</b>
+                      </Col>
+                    </Row>
+                  )}
+                {available_size_and_rate &&
+                available_size_and_rate.length > 0 ? (
+                  available_size_and_rate.map((value, i) => (
+                    <Row key={i} className="text-center mt-2 bg-dark p-2">
+                      <Col className="text-light">{value.hight}</Col>
+                      <Col className="text-light">{value.width}</Col>
+                      <Col className="text-light">{value.rate}</Col>
+                    </Row>
+                  ))
+                ) : (
+                  <p>No size and rate data available.</p>
+                )}
+              </div>
+            </div>
+          </Col>
+        </Row>
+      </Card>
+    </Container>
   );
 };
 

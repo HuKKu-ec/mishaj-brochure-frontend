@@ -40,7 +40,7 @@ const AdminLogin = () => {
       <h1 style={{ textAlign: 'center' }}>Admin Login</h1>
       <Container>
         <Card className="p-3 pt-5 pb-1">
-          <FloatingLabel label="Email" className="mb-3">
+          <FloatingLabel label="Email " className="mb-3">
             <Form.Control
               type="email"
               placeholder="email"

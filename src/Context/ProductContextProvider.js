@@ -11,7 +11,13 @@ const reducer = (state, action) => {
 
     case 'ADDPRODUCT':
       return {
-        products: [...state.products, action.payload],
+        products: [action.payload, ...state.products],
+      };
+    case 'EDITPRODUCT':
+      return {
+        products: state.products.map((product) =>
+          product._id === action.payload._id ? action.payload : product
+        ),
       };
 
     case 'DELETEPRODUCT':
@@ -34,8 +40,6 @@ const reducer = (state, action) => {
 };
 const ProductContextProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, { products: null });
-
-
 
   return (
     <ProductContext.Provider value={{ ...state, dispatch }}>

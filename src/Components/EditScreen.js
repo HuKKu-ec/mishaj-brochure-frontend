@@ -5,58 +5,36 @@ import Form from 'react-bootstrap/Form';
 import { useParams } from 'react-router-dom';
 
 const EditScreen = () => {
-  const { id } = useParams();
-  const fetchData = async () => {
-    const response = await fetch('/api/products/' + id, {
-      method: 'GET',
-    });
-    console.log(response);
-  };
-  useEffect(() => {
-    fetchData();
-  }, []);
-
   return (
     <div>
       {' '}
-      <div className="Edititems-container m-5">
-        <h1 style={{ textAlign: 'center' }}>Edit Items</h1>
-        <Card className="p-3">
-          {/* enter Product ID */}
-          <FloatingLabel
-            controlId="floatingInput"
-            label="Product ID"
-            className="mb-3"
-          >
-            <Form.Control type="text" placeholder="Product ID" />
-          </FloatingLabel>
-          {/* select Product Catogory */}
-          <FloatingLabel
-            className="mb-2"
-            controlId="floatingSelect"
-            label="Category"
-          >
-            <Form.Select aria-label="Floating label select example">
-              <option value="1">One</option>
-              <option value="2">Two</option>
-              <option value="3">Three</option>
-            </Form.Select>
-          </FloatingLabel>
+      <div className="Edititems-container">
+        {/* enter Product ID */}
+        <FloatingLabel
+          controlId="floatingInput"
+          label="Product ID"
+          className="mb-3"
+        >
+          <Form.Control type="text" placeholder="Product ID" />
+        </FloatingLabel>
+        {/* select Product Catogory */}
+        <FloatingLabel
+          className="mb-2"
+          controlId="floatingSelect"
+          label="Category"
+        >
+          <Form.Select aria-label="Floating label select example">
+            <option value="1">One</option>
+            <option value="2">Two</option>
+            <option value="3">Three</option>
+          </Form.Select>
+        </FloatingLabel>
 
-          {/* file upload */}
-          <Form.Group controlId="formFile" className="mb-3">
-            <Form.Label>Upload The Image</Form.Label>
-            <Form.Control type="file" />
-          </Form.Group>
-          <Row className="justify-content-xs-right">
-            <Col>
-              <Button variant="danger ">Clear All</Button>
-            </Col>
-            <Col xs="auto">
-              <Button variant="success">Edit Item</Button>
-            </Col>
-          </Row>
-        </Card>
+        {/* file upload */}
+        <Form.Group controlId="formFile" className="mb-3">
+          <Form.Label>Upload The Image</Form.Label>
+          <Form.Control type="file" />
+        </Form.Group>
       </div>
     </div>
   );

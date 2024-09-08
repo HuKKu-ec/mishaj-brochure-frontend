@@ -17,13 +17,28 @@ const AddItems = () => {
   const [cropper, setCropper] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [progress, setProgress] = useState(true);
+  const [hight, setHight] = useState('');
+  const [width, setWidth] = useState('');
+  const [rate, setRate] = useState('');
+
   const { categorys } = useContext(CategoryContext);
   const { dispatch } = useContext(ProductContext);
   const { admin } = useContext(AdminContext);
-  const [show, setShow] = useState(false);
+  const [imageShow, setImageShow] = useState(false);
+  const [AvailRateSizeShow, setAvailRateSizeShow] = useState(false);
+  const [AvailRateSize, setAvailRateSize] = useState([]);
 
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
+  function handleAvailRateSizeClose() {
+    setAvailRateSizeShow(false);
+  }
+  function handleAvailRateSizeCloseAndClear() {
+    setAvailRateSize([]);
+  }
+
+  const handleAvailRateSizeShow = () => setAvailRateSizeShow(true);
+
+  const handleImageClose = () => setImageShow(false);
+  const handleImageShow = () => setImageShow(true);
 
   const handleClear = () => {
     setProId('');
@@ -31,6 +46,7 @@ const AddItems = () => {
     setImages([]);
     setImagePreview(null);
     setCurrentImageIndex(0);
+    setAvailRateSize([]);
   };
 
   const handleAddItem = async (e) => {
@@ -42,6 +58,9 @@ const AddItems = () => {
       images.forEach((image) => formData.append('files', image));
       formData.append('productId', proId);
       formData.append('category', cate);
+      AvailRateSize.forEach((item) => {
+        formData.append('available_size_and_rate', JSON.stringify(item));
+      });
 
       const response = await fetch('/api/products', {
         method: 'POST',
@@ -73,7 +92,7 @@ const AddItems = () => {
       setImages(files);
       setImagePreview(URL.createObjectURL(files[0]));
       setCurrentImageIndex(0);
-      setShow(true);
+      setImageShow(true);
     }
   };
 
@@ -94,10 +113,22 @@ const AddItems = () => {
           setCurrentImageIndex(currentImageIndex + 1);
           setImagePreview(URL.createObjectURL(images[currentImageIndex + 1]));
         } else {
-          setShow(false);
+          setImageShow(false);
         }
       }, 'image/jpeg');
     }
+  };
+  const handleAddToTable = () => {
+    AvailRateSize.push({
+      id: Math.floor(Math.random() * 100000000),
+      hight: hight,
+      width: width,
+      rate: rate,
+    });
+    setAvailRateSize([...AvailRateSize]);
+    setHight('');
+    setWidth('');
+    setRate('');
   };
 
   return (
@@ -110,6 +141,7 @@ const AddItems = () => {
           className="mb-3"
         >
           <Form.Control
+            placeholder="Product ID"
             value={proId}
             type="text"
             onChange={(e) => setProId(e.target.value)}
@@ -134,10 +166,10 @@ const AddItems = () => {
               ))}
           </Form.Select>
         </FloatingLabel>
-        <Button variant="primary mb-3" onClick={handleShow}>
+        <Button variant="primary mb-3" onClick={handleImageShow}>
           Upload Images
         </Button>
-        <Modal show={show} onHide={handleClose} size="lg">
+        <Modal show={imageShow} onHide={handleImageClose} size="lg" centered>
           <Modal.Header closeButton>
             <Modal.Title>Upload and Crop Images</Modal.Title>
           </Modal.Header>
@@ -154,7 +186,7 @@ const AddItems = () => {
             {imagePreview && (
               <Cropper
                 src={imagePreview}
-                style={{ height: 400, width: '100%' }}
+                style={{ hight: 400, width: '100%' }}
                 aspectRatio={5 / 6}
                 viewMode={1}
                 guides={false}
@@ -167,7 +199,7 @@ const AddItems = () => {
             )}
           </Modal.Body>
           <Modal.Footer>
-            <Button variant="secondary" onClick={handleClose}>
+            <Button variant="secondary" onClick={handleImageClose}>
               Close
             </Button>
             <Button variant="primary" onClick={handleCrop}>
@@ -175,10 +207,94 @@ const AddItems = () => {
             </Button>
           </Modal.Footer>
         </Modal>
+        <Button variant="primary mb-3" onClick={handleAvailRateSizeShow}>
+          Available Sizes & Rate
+        </Button>
+        <Modal
+          show={AvailRateSizeShow}
+          onHide={handleAvailRateSizeClose}
+          size="lg"
+          centered
+        >
+          <Modal.Header closeButton>
+            <Modal.Title>Available Sizes & Rate</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <Row>
+              <Col lg="3">
+                <b>Hight</b>
+              </Col>
+              <Col lg="3">
+                <b>Width</b>
+              </Col>
+              <Col lg="3">
+                <b>Rate</b>
+              </Col>
+            </Row>
+            {AvailRateSize.map((value, ind) => (
+              <Row>
+                <Col lg="3">{value.hight}</Col>
+                <Col lg="3">{value.width}</Col>
+                <Col lg="3">{value.rate}</Col>
+              </Row>
+            ))}
+            <Row>
+              <Col lg="3">
+                <Form.Control
+                  placeholder="Heigth"
+                  value={hight}
+                  type="number"
+                  onChange={(e) => setHight(e.target.value)}
+                />
+              </Col>{' '}
+              <Col lg="3">
+                <Form.Control
+                  placeholder="Width"
+                  value={width}
+                  type="number"
+                  onChange={(e) => setWidth(e.target.value)}
+                />
+              </Col>
+              <Col lg="3">
+                <Form.Control
+                  placeholder="Rate"
+                  value={rate}
+                  type="number"
+                  onChange={(e) => setRate(e.target.value)}
+                />
+              </Col>
+              <Col lg="3">
+                <Button
+                  style={{ width: '100%' }}
+                  className="full-width"
+                  variant="success"
+                  onClick={handleAddToTable}
+                >
+                  Add to Table
+                </Button>
+              </Col>
+            </Row>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button
+              variant="secondary"
+              onClick={handleAvailRateSizeCloseAndClear}
+            >
+              Clear All
+            </Button>
+            <Button
+              variant="primary"
+              onClick={() => setAvailRateSizeShow(false)}
+            >
+              Submit
+            </Button>
+          </Modal.Footer>
+        </Modal>
+
         <Row className="justify-content-xs-right mb-4">
           <Col>
             <Button
-              variant="primary"
+              variant="secondary"
               onClick={handleClear}
               disabled={!progress}
             >

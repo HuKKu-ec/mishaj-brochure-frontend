@@ -164,7 +164,7 @@ const AddCategory = () => {
 
   return (
     <div>
-      <Card className="p-3 mt-5">
+      <Card className="p-3 mt-2">
         <h2 style={{ textAlign: 'center' }}>Add Categories</h2>
         <FloatingLabel
           controlId="floatingInput"
@@ -172,6 +172,7 @@ const AddCategory = () => {
           className="mb-3 mt-2"
         >
           <Form.Control
+            placeholder="Add a Category Name"
             type="text"
             value={category}
             onChange={(e) => {
@@ -183,7 +184,7 @@ const AddCategory = () => {
         <Row className="mb-4 align-items-center justify-content-center gap-3">
           <Col xs="auto">
             <Button
-              variant="primary"
+              variant="secondary"
               onClick={handleClear}
               disabled={!progress}
             >
