@@ -20,12 +20,12 @@ const NavbarHead = () => {
       <Navbar bg="light" expand="lg">
         <Container fluid>
           <Navbar.Brand href="/">
-            <Image
+            {/* <Image
               fluid
               style={{ height: '45px', margin: '20px' }}
               src={logo}
               placeholder="Mishaj brand Logo is missing"
-            />
+            /> */}
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="navbarScroll" />
           {admin ? (

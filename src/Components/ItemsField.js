@@ -125,32 +125,32 @@ const ItemsField = () => {
     });
   };
   // Handle cropping and saving the cropped image
-  const handleCrop = useCallback(() => {
-    if (cropper) {
-      cropper.getCroppedCanvas().toBlob((blob) => {
-        const croppedImage = new File(
-          [blob],
-          `cropped_${currentImageIndex}.jpg`,
-          { type: 'image/jpeg' }
-        );
-        setImages((prevImages) => {
-          const newImages = [...prevImages];
-          newImages[currentImageIndex] = croppedImage;
-          return newImages;
-        });
+  // const handleCrop = useCallback(() => {
+  //   if (cropper) {
+  //     cropper.getCroppedCanvas().toBlob((blob) => {
+  //       const croppedImage = new File(
+  //         [blob],
+  //         `cropped_${currentImageIndex}.jpg`,
+  //         { type: 'image/jpeg' }
+  //       );
+  //       setImages((prevImages) => {
+  //         const newImages = [...prevImages];
+  //         newImages[currentImageIndex] = croppedImage;
+  //         return newImages;
+  //       });
 
-        // Close the modal after cropping
-        setImageShow(false);
+  //       // Close the modal after cropping
+  //       setImageShow(false);
 
-        // Optionally, update the image preview if there's a next image to crop
-        if (currentImageIndex < images.length - 1) {
-          setCurrentImageIndex(currentImageIndex + 1);
-          setImagePreview(URL.createObjectURL(images[currentImageIndex + 1]));
-          setImageShow(true); // Re-open the modal for the next image
-        }
-      }, 'image/jpeg');
-    }
-  }, [cropper, currentImageIndex, images.length]);
+  //       // Optionally, update the image preview if there's a next image to crop
+  //       if (currentImageIndex < images.length - 1) {
+  //         setCurrentImageIndex(currentImageIndex + 1);
+  //         setImagePreview(URL.createObjectURL(images[currentImageIndex + 1]));
+  //         setImageShow(true); // Re-open the modal for the next image
+  //       }
+  //     }, 'image/jpeg');
+  //   }
+  // }, [cropper, currentImageIndex, images.length]);
 
   // Handle form submission for updating product details
   const handleUpdateItem = useCallback(
@@ -536,7 +536,7 @@ const ItemsField = () => {
                         style={{ height: '100px', width: '100px' }}
                       />
                     </Col>
-                    <Col md={4}>{img.filename}</Col>
+                    <Col md={6}>{img.filename}</Col>
 
                     <Col md={2}>
                       <Button
@@ -546,7 +546,7 @@ const ItemsField = () => {
                         Remove
                       </Button>
                     </Col>
-                    <Col md={2}>
+                    {/* <Col md={2}>
                       <Button
                         variant="secondary"
                         onClick={() => {
@@ -561,7 +561,7 @@ const ItemsField = () => {
                       >
                         Crop
                       </Button>
-                    </Col>
+                    </Col> */}
                   </Row>
                 </ListGroup.Item>
               ))}
@@ -579,7 +579,7 @@ const ItemsField = () => {
       </Modal>
 
       {/* Modal for image cropping */}
-      <Modal show={imageShow} onHide={handleImageClose} size="lg" centered>
+      {/* <Modal show={imageShow} onHide={handleImageClose} size="lg" centered>
         <Modal.Header closeButton>
           <Modal.Title>Crop Image</Modal.Title>
         </Modal.Header>
@@ -607,7 +607,7 @@ const ItemsField = () => {
             Crop & Save
           </Button>
         </Modal.Footer>
-      </Modal>
+      </Modal> */}
     </div>
   );
 };

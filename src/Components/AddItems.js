@@ -189,7 +189,9 @@ const AddItems = () => {
                 style={{ hight: 400, width: '100%' }}
                 aspectRatio={5 / 6}
                 viewMode={1}
-                guides={false}
+                guides={true}
+                minCropBoxHeight={10}
+                minCropBoxWidth={10}
                 background={false}
                 responsive={true}
                 autoCropArea={1}
