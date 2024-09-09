@@ -19,6 +19,7 @@ const AddItems = () => {
   const [progress, setProgress] = useState(true);
   const [hight, setHight] = useState('');
   const [width, setWidth] = useState('');
+  const [thickness, setThickness] = useState('');
   const [rate, setRate] = useState('');
 
   const { categorys } = useContext(CategoryContext);
@@ -123,11 +124,13 @@ const AddItems = () => {
       id: Math.floor(Math.random() * 100000000),
       hight: hight,
       width: width,
+      thickness: thickness,
       rate: rate,
     });
     setAvailRateSize([...AvailRateSize]);
     setHight('');
     setWidth('');
+    setThickness('');
     setRate('');
   };
 
@@ -223,25 +226,30 @@ const AddItems = () => {
           </Modal.Header>
           <Modal.Body>
             <Row>
-              <Col lg="3">
+              <Col>
                 <b>Hight</b>
               </Col>
-              <Col lg="3">
+              <Col>
                 <b>Width</b>
               </Col>
-              <Col lg="3">
+              <Col>
+                <b>Thickness</b>
+              </Col>
+              <Col>
                 <b>Rate</b>
               </Col>
+              <Col></Col>
             </Row>
             {AvailRateSize.map((value, ind) => (
               <Row>
-                <Col lg="3">{value.hight}</Col>
-                <Col lg="3">{value.width}</Col>
-                <Col lg="3">{value.rate}</Col>
+                <Col>{value.hight}</Col>
+                <Col>{value.width}</Col>
+                <Col>{value.thickness}</Col>
+                <Col>{value.rate}</Col>
               </Row>
             ))}
             <Row>
-              <Col lg="3">
+              <Col>
                 <Form.Control
                   placeholder="Heigth"
                   value={hight}
@@ -249,7 +257,7 @@ const AddItems = () => {
                   onChange={(e) => setHight(e.target.value)}
                 />
               </Col>{' '}
-              <Col lg="3">
+              <Col>
                 <Form.Control
                   placeholder="Width"
                   value={width}
@@ -257,7 +265,15 @@ const AddItems = () => {
                   onChange={(e) => setWidth(e.target.value)}
                 />
               </Col>
-              <Col lg="3">
+              <Col>
+                <Form.Control
+                  placeholder="Thickness"
+                  value={thickness}
+                  type="number"
+                  onChange={(e) => setThickness(e.target.value)}
+                />
+              </Col>
+              <Col>
                 <Form.Control
                   placeholder="Rate"
                   value={rate}
@@ -265,7 +281,7 @@ const AddItems = () => {
                   onChange={(e) => setRate(e.target.value)}
                 />
               </Col>
-              <Col lg="3">
+              <Col>
                 <Button
                   style={{ width: '100%' }}
                   className="full-width"

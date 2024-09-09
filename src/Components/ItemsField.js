@@ -32,6 +32,7 @@ const ItemsField = () => {
   const [AvailRateSize, setAvailRateSize] = useState([]);
   const [hight, setHight] = useState('');
   const [width, setWidth] = useState('');
+  const [thickness, setThickness] = useState('');
   const [rate, setRate] = useState('');
 
   // Context for accessing categories, products, and admin details
@@ -96,11 +97,13 @@ const ItemsField = () => {
       id: Math.floor(Math.random() * 100000000),
       hight: hight,
       width: width,
+      thickness: thickness,
       rate: rate,
     });
-    setAvailRateSize(AvailRateSize);
+    setAvailRateSize([...AvailRateSize]);
     setHight('');
     setWidth('');
+    setThickness('');
     setRate('');
   };
   var removeByAttr = function (arr, attr, value) {
@@ -125,32 +128,32 @@ const ItemsField = () => {
     });
   };
   // Handle cropping and saving the cropped image
-  // const handleCrop = useCallback(() => {
-  //   if (cropper) {
-  //     cropper.getCroppedCanvas().toBlob((blob) => {
-  //       const croppedImage = new File(
-  //         [blob],
-  //         `cropped_${currentImageIndex}.jpg`,
-  //         { type: 'image/jpeg' }
-  //       );
-  //       setImages((prevImages) => {
-  //         const newImages = [...prevImages];
-  //         newImages[currentImageIndex] = croppedImage;
-  //         return newImages;
-  //       });
+  const handleCrop = useCallback(() => {
+    if (cropper) {
+      cropper.getCroppedCanvas().toBlob((blob) => {
+        const croppedImage = new File(
+          [blob],
+          `cropped_${currentImageIndex}.jpg`,
+          { type: 'image/jpeg' }
+        );
+        setImages((prevImages) => {
+          const newImages = [...prevImages];
+          newImages[currentImageIndex] = croppedImage;
+          return newImages;
+        });
 
-  //       // Close the modal after cropping
-  //       setImageShow(false);
+        // Close the modal after cropping
+        setImageShow(false);
 
-  //       // Optionally, update the image preview if there's a next image to crop
-  //       if (currentImageIndex < images.length - 1) {
-  //         setCurrentImageIndex(currentImageIndex + 1);
-  //         setImagePreview(URL.createObjectURL(images[currentImageIndex + 1]));
-  //         setImageShow(true); // Re-open the modal for the next image
-  //       }
-  //     }, 'image/jpeg');
-  //   }
-  // }, [cropper, currentImageIndex, images.length]);
+        // Optionally, update the image preview if there's a next image to crop
+        if (currentImageIndex < images.length - 1) {
+          setCurrentImageIndex(currentImageIndex + 1);
+          setImagePreview(URL.createObjectURL(images[currentImageIndex + 1]));
+          setImageShow(true); // Re-open the modal for the next image
+        }
+      }, 'image/jpeg');
+    }
+  }, [cropper, currentImageIndex, images.length]);
 
   // Handle form submission for updating product details
   const handleUpdateItem = useCallback(
@@ -335,6 +338,7 @@ const ItemsField = () => {
                       <tr>
                         <th>Height</th>
                         <th>Width</th>
+                        <th>Thick</th>
                         <th>Rate</th>
                       </tr>
                     </thead>
@@ -343,6 +347,7 @@ const ItemsField = () => {
                         <tr key={i}>
                           <td>{v.hight}</td>
                           <td>{v.width}</td>
+                          <td>{v.thickness}</td>
                           <td>{v.rate}</td>
                         </tr>
                       ))}
@@ -429,22 +434,27 @@ const ItemsField = () => {
               </Modal.Header>
               <Modal.Body className="bg-light">
                 <Row className="mb-1">
-                  <Col lg="3">
+                  <Col>
                     <b>Hight</b>
                   </Col>
-                  <Col lg="3">
+                  <Col>
                     <b>Width</b>
                   </Col>
-                  <Col lg="3">
+                  <Col>
+                    <b>Thickness</b>
+                  </Col>
+                  <Col>
                     <b>Rate</b>
                   </Col>
+                  <Col></Col>
                 </Row>
                 {AvailRateSize.map((value, index) => (
                   <Row className="mb-1">
-                    <Col lg="3">{value.hight}</Col>
-                    <Col lg="3">{value.width}</Col>
-                    <Col lg="3">{value.rate}</Col>
-                    <Col lg="3">
+                    <Col>{value.hight}</Col>
+                    <Col>{value.width}</Col>
+                    <Col>{value.thickness}</Col>
+                    <Col>{value.rate}</Col>
+                    <Col>
                       <Button
                         style={{ width: '100%' }}
                         className="full-width"
@@ -457,7 +467,7 @@ const ItemsField = () => {
                   </Row>
                 ))}
                 <Row>
-                  <Col lg="3">
+                  <Col>
                     <Form.Control
                       placeholder="Heigth"
                       value={hight}
@@ -465,7 +475,7 @@ const ItemsField = () => {
                       onChange={(e) => setHight(e.target.value)}
                     />
                   </Col>{' '}
-                  <Col lg="3">
+                  <Col>
                     <Form.Control
                       placeholder="Width"
                       value={width}
@@ -473,15 +483,23 @@ const ItemsField = () => {
                       onChange={(e) => setWidth(e.target.value)}
                     />
                   </Col>
-                  <Col lg="3">
+                  <Col>
+                    <Form.Control
+                      placeholder="Thickness"
+                      value={thickness}
+                      type="number"
+                      onChange={(e) => setThickness(e.target.value)}
+                    />
+                  </Col>
+                  <Col>
                     <Form.Control
                       placeholder="Rate"
                       value={rate}
                       type="number"
                       onChange={(e) => setRate(e.target.value)}
                     />
-                  </Col>
-                  <Col lg="3">
+                  </Col>{' '}
+                  <Col>
                     <Button
                       style={{ width: '100%' }}
                       className="full-width"
@@ -579,7 +597,7 @@ const ItemsField = () => {
       </Modal>
 
       {/* Modal for image cropping */}
-      {/* <Modal show={imageShow} onHide={handleImageClose} size="lg" centered>
+      <Modal show={imageShow} onHide={handleImageClose} size="lg" centered>
         <Modal.Header closeButton>
           <Modal.Title>Crop Image</Modal.Title>
         </Modal.Header>
@@ -607,7 +625,7 @@ const ItemsField = () => {
             Crop & Save
           </Button>
         </Modal.Footer>
-      </Modal> */}
+      </Modal>
     </div>
   );
 };
