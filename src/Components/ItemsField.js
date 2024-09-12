@@ -106,20 +106,6 @@ const ItemsField = () => {
     setThickness('');
     setRate('');
   };
-  var removeByAttr = function (arr, attr, value) {
-    var i = arr.length;
-    while (i--) {
-      if (
-        arr[i] &&
-        arr[i].hasOwnProperty(attr) &&
-        arguments.length > 2 &&
-        arr[i][attr] === value
-      ) {
-        arr.splice(i, 1);
-      }
-    }
-    return arr;
-  };
 
   const handleDeleteToTable = (id) => {
     setAvailRateSize((prevAvailRateSize) => {
@@ -603,9 +589,9 @@ const ItemsField = () => {
         </Modal.Header>
         <Modal.Body>
           <Cropper
-            style={{ height: 400, width: '100%' }}
-            aspectRatio={1}
             src={imagePreview}
+            style={{ hight: 400, width: '100%' }}
+            aspectRatio={5 / 6}
             viewMode={1}
             guides={true}
             minCropBoxHeight={10}

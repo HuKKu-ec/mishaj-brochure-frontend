@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useCallback, useContext, useState } from 'react';
 import { Button, Card, Col, Row, Spinner, Modal } from 'react-bootstrap';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import Form from 'react-bootstrap/Form';
@@ -97,7 +97,7 @@ const AddItems = () => {
     }
   };
 
-  const handleCrop = () => {
+  const handleCrop = useCallback(() => {
     if (cropper) {
       cropper.getCroppedCanvas().toBlob((blob) => {
         const croppedImage = new File(
@@ -110,15 +110,19 @@ const AddItems = () => {
           newImages[currentImageIndex] = croppedImage;
           return newImages;
         });
+
+        // Close the modal after cropping
+        setImageShow(false);
+
+        // Optionally, update the image preview if there's a next image to crop
         if (currentImageIndex < images.length - 1) {
           setCurrentImageIndex(currentImageIndex + 1);
           setImagePreview(URL.createObjectURL(images[currentImageIndex + 1]));
-        } else {
-          setImageShow(false);
+          setImageShow(true); // Re-open the modal for the next image
         }
       }, 'image/jpeg');
     }
-  };
+  }, [cropper, currentImageIndex, images.length]);
   const handleAddToTable = () => {
     AvailRateSize.push({
       id: Math.floor(Math.random() * 100000000),
