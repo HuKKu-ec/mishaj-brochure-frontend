@@ -62,6 +62,9 @@ const ProductDisplay = () => {
                         <b>Width</b>
                       </Col>
                       <Col>
+                        <b>Thickness</b>
+                      </Col>
+                      <Col>
                         <b>Rate</b>
                       </Col>
                     </Row>
@@ -72,6 +75,7 @@ const ProductDisplay = () => {
                     <Row key={i} className="text-center mt-2 bg-dark p-2">
                       <Col className="text-light">{value.hight}</Col>
                       <Col className="text-light">{value.width}</Col>
+                      <Col className="text-light">{value.thickness}</Col>
                       <Col className="text-light">{value.rate}</Col>
                     </Row>
                   ))
