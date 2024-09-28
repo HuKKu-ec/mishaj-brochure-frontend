@@ -1,3 +1,0 @@
-/api/*              /.netlify/functions/:splat   200
-/external-api/*     https://external-api.com/:splat  200
-/*                  /index.html                  200
