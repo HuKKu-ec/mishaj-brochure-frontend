@@ -1,5 +1,5 @@
 {
-  "proxy": "http://localhost:4000",
+  "proxy": "https://mishaj-brochure-backend.onrender.com/",
   "name": "mishaj-brochure",
   "version": "0.1.0",
   "private": true,
