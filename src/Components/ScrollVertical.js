@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Scrollbars } from 'react-custom-scrollbars-2';
 
 const ScrollVertical = ({ state }) => {
@@ -12,13 +12,14 @@ const ScrollVertical = ({ state }) => {
     const json = await response.json();
     if (response.ok) {
       setCategorys(json.categorys);
+      console.log(category);
     } else {
       console.log(json.error);
     }
   };
   useEffect(() => {
     fetchCategory();
-  }, []);
+  });
   return (
     <div className="scrollbar-container">
       <Scrollbars autoHide>

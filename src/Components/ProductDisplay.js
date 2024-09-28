@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card, Col, Row, Container } from 'react-bootstrap';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import { Carousel } from 'react-responsive-carousel';
@@ -25,7 +25,7 @@ const ProductDisplay = () => {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  });
 
   return (
     <Container className="product-card-container">
@@ -36,10 +36,7 @@ const ProductDisplay = () => {
               {files &&
                 files.map((value, i) => (
                   <div key={i}>
-                    <img
-                      src={`/${value.path}`}
-                      alt={`Product Image ${i + 1}`}
-                    />
+                    <img src={`/${value.path}`} alt={`Product ${i + 1}`} />
                   </div>
                 ))}
             </Carousel>

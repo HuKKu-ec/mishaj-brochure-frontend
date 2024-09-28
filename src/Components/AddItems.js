@@ -118,11 +118,12 @@ const AddItems = () => {
         if (currentImageIndex < images.length - 1) {
           setCurrentImageIndex(currentImageIndex + 1);
           setImagePreview(URL.createObjectURL(images[currentImageIndex + 1]));
+
           setImageShow(true); // Re-open the modal for the next image
         }
       }, 'image/jpeg');
     }
-  }, [cropper, currentImageIndex, images.length]);
+  }, [cropper, currentImageIndex, images]);
   const handleAddToTable = () => {
     AvailRateSize.push({
       id: Math.floor(Math.random() * 100000000),

@@ -43,7 +43,6 @@ const ItemsField = () => {
 
   // Handle closing the image modal
   const handleImageClose = () => setImageShow(false);
-  const handleImageShow = () => setImageShow(true);
 
   // Reset form data and close modal
   const handleClose = useCallback(() => {
@@ -139,7 +138,7 @@ const ItemsField = () => {
         }
       }, 'image/jpeg');
     }
-  }, [cropper, currentImageIndex, images.length]);
+  }, [cropper, currentImageIndex, images]);
 
   // Handle form submission for updating product details
   const handleUpdateItem = useCallback(
@@ -156,7 +155,7 @@ const ItemsField = () => {
           formData.append('available_size_and_rate', JSON.stringify(item));
         });
 
-        images.map((image, ind) => {
+        images.forEach((image) => {
           if (image.filename) {
             formData.append('currentFilenames', image.filename);
           }
