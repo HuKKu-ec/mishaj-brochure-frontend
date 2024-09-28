@@ -26,7 +26,7 @@ const HomeScreen = () => {
   };
   useEffect(() => {
     fetchCategory();
-  }, []);
+  });
 
   return (
     <div className="card-container">

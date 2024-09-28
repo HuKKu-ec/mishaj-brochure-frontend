@@ -1,5 +1,4 @@
-import React, { createContext, useContext, useEffect, useReducer } from 'react';
-import { AdminContext } from './AdminContextProvider';
+import React, { createContext, useReducer } from 'react';
 
 export const ProductContext = createContext();
 
